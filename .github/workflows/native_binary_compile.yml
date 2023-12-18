@@ -24,7 +24,7 @@ jobs:
           echo "GRAALVM_HOME: $GRAALVM_HOME"
           echo "JAVA_HOME: $JAVA_HOME"
           java --version
-          gu -L list
+          gu list
           native-image --version
 
       - name: Compile native application

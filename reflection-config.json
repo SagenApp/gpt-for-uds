@@ -1,0 +1,53 @@
+[
+  {
+    "name" : "app.sagen.chatgptclient.data.ChatCompletionRequestMessage",
+    "allPublicConstructors": true,
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicFields": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name" : "app.sagen.chatgptclient.data.ChatCompletionResponse",
+    "allPublicConstructors": true,
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicFields": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name" : "app.sagen.chatgptclient.data.ChatCompletionResponseChunk",
+    "allPublicConstructors": true,
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicFields": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name" : "app.sagen.chatgptclient.data.Choice",
+    "allPublicConstructors": true,
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicFields": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name" : "app.sagen.chatgptclient.data.Delta",
+    "allPublicConstructors": true,
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicFields": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name" : "jdk.internal.reflect.ReflectionFactory",
+    "methods" : [
+      {"name" : "getReflectionFactory", "parameterTypes": [] }
+    ]
+  }
+]

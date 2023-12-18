@@ -1,20 +1,31 @@
 name: Compile native binary file
+
 on: [push, pull_request]
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: graalvm/setup-graalvm@v1
+      
+      - name: Set up GraalVM
+        uses: graalvm/setup-graalvm@v1
         with:
-          java-version: '17'
-          distribution: 'graalvm' # See 'Options' for all available distributions
+          java-version: 'java17'
+          distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Install native-image component
+        run: gu install native-image
+
       - name: Print debug information
         run: |
           echo "GRAALVM_HOME: $GRAALVM_HOME"
           echo "JAVA_HOME: $JAVA_HOME"
           java --version
           native-image --version
+
       - name: Compile native application
         run: ./gradlew nativeCompile
+        env:
+          JAVA_HOME: ${{ env.GRAALVM_HOME }}   # Override JAVA_HOME to use GraalVM

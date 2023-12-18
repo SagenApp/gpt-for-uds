@@ -1,6 +1,6 @@
 name: Compile native binary file
 
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
   build:
@@ -11,7 +11,9 @@ jobs:
       - name: Set up GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          java-version: 'java17'
+          # Use a valid GraalVM version that includes Java 17
+          graalvm-version: '22.2.0' # Replace with the version you want to use
+          java-version: '17'
           distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           
@@ -28,4 +30,5 @@ jobs:
       - name: Compile native application
         run: ./gradlew nativeCompile
         env:
-          JAVA_HOME: ${{ env.GRAALVM_HOME }}   # Override JAVA_HOME to use GraalVM
+          GRAALVM_HOME: ${{ steps.setup-graalvm.outputs.graalvm-path }}
+          JAVA_HOME: ${{ steps.setup-graalvm.outputs.java-home }}

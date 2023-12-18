@@ -11,8 +11,8 @@ jobs:
       - name: Set up GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          version: 'latest' # Use 'latest' or specify an exact version like '22.0.0.2'
-          java-version: 'java17'
+          version: 'latest' # or specify a version such as '22.2.0'
+          java-version: '17'  # Correct value for Java 17
           distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           
@@ -24,9 +24,10 @@ jobs:
           echo "GRAALVM_HOME: $GRAALVM_HOME"
           echo "JAVA_HOME: $JAVA_HOME"
           java --version
+          gu -L list
           native-image --version
 
       - name: Compile native application
         run: ./gradlew nativeCompile
         env:
-          JAVA_HOME: ${{ env.GRAALVM_HOME }}   # Override JAVA_HOME to use GraalVM
+          JAVA_HOME: ${{ env.GRAALVM_HOME }}  # Override JAVA_HOME to use GraalVM

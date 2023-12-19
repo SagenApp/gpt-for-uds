@@ -1,6 +1,12 @@
 name: Compile native binary file
 
-on: [pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:
@@ -33,10 +39,6 @@ jobs:
           GITHUB_REF: ${{ github.ref }}
           JAVA_HOME: ${{ env.GRAALVM_HOME }}  # Override JAVA_HOME to use GraalVM
 
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1

@@ -28,6 +28,32 @@ jobs:
           native-image --version
 
       - name: Compile native application
-        run: ./gradlew nativeCompile
+        run: ./gradlew nativeCompile -Pversion=${GITHUB_REF#refs/tags/}
         env:
+          GITHUB_REF: ${{ github.ref }}
           JAVA_HOME: ${{ env.GRAALVM_HOME }}  # Override JAVA_HOME to use GraalVM
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/native/nativeCompile/gpt-for-uds-${{ github.event.release.tag_name }} # replace with the correct path and filename pattern
+          asset_name: gpt-for-uds-${{ github.event.release.tag_name }} # replace with the correct filename pattern
+          asset_content_type: application/octet-stream

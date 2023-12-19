@@ -20,10 +20,21 @@ java {
     }
 }
 
+// pull the version from the 'version' property or default to '0.0.1-SNAPSHOT'
+val versionFromProperties = findProperty("version")?.toString() ?: "0.0.1-SNAPSHOT"
+
+// Set the project version
+version = versionFromProperties
+
+tasks.withType<Jar> {
+    archiveVersion.set(versionFromProperties)
+    // Other Jar configuration settings
+}
+
 graalvmNative {
     binaries {
         named("main") {
-            imageName.set("gpt-for-uds")
+            imageName.set("gpt-for-uds-${versionFromProperties}")
             mainClass.set("app.sagen.chatgptclient.UnixSocketServer")
             buildArgs.add("-O4")
             buildArgs.add("--no-fallback")

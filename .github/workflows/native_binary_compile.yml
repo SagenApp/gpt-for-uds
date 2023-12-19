@@ -1,0 +1,61 @@
+name: Compile native binary file
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          version: 'latest' # or specify a version such as '22.2.0'
+          java-version: '17'  # Correct value for Java 17
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Install native-image component
+        run: gu install native-image
+
+      - name: Print debug information
+        run: |
+          echo "GRAALVM_HOME: $GRAALVM_HOME"
+          echo "JAVA_HOME: $JAVA_HOME"
+          java --version
+          gu list
+          native-image --version
+
+      - name: Compile native application
+        run: ./gradlew nativeCompile -Pversion=${GITHUB_REF#refs/tags/}
+        env:
+          GITHUB_REF: ${{ github.ref }}
+          JAVA_HOME: ${{ env.GRAALVM_HOME }}  # Override JAVA_HOME to use GraalVM
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/native/nativeCompile/gpt-for-uds-${{ github.event.release.tag_name }} # replace with the correct path and filename pattern
+          asset_name: gpt-for-uds-${{ github.event.release.tag_name }} # replace with the correct filename pattern
+          asset_content_type: application/octet-stream

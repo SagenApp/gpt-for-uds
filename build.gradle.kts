@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("org.graalvm.buildtools.native") version "0.9.9"
+    id("org.graalvm.buildtools.native") version "0.9.28"
 }
 
 group = "app.sagen"
@@ -20,25 +20,33 @@ java {
     }
 }
 
-nativeBuild {
-    imageName.set("my-native-app")
+// pull the version from the 'version' property or default to '0.0.1-SNAPSHOT'
+val versionFromProperties = findProperty("version")?.toString() ?: "0.0.1-SNAPSHOT"
+
+// Set the project version
+version = versionFromProperties
+
+tasks.withType<Jar> {
+    archiveVersion.set(versionFromProperties)
+    // Other Jar configuration settings
 }
 
 graalvmNative {
     binaries {
-        named("main").configure {
-            // Specific options for native-image can be set here
-            buildArgs.addAll(listOf(
-                "--no-fallback",
-                "--no-server",
-                "-O3",
-                "-H:Name=my-native-app", // Desired name of the native executable
-                "-H:Class=app.sagen.chatgptclient.UnixSocketServer", // Fully qualified name of your main class
-                "-H:ReflectionConfigurationFiles=${projectDir.toPath().resolve("reflection-config.json")}", // Path to your reflection config file
-                "-Duser.country=US",
-                "-Duser.language=en",
-                "-H:IncludeLocales=en"
-            ))
+        named("main") {
+            imageName.set("gpt-for-uds-${versionFromProperties}")
+            mainClass.set("app.sagen.chatgptclient.UnixSocketServer")
+            buildArgs.add("-O4")
+            buildArgs.add("--no-fallback")
+            buildArgs.add("--no-server")
+            buildArgs.add("-H:ReflectionConfigurationFiles=${projectDir.toPath().resolve("reflection-config.json")}")
+            debug.set(true)
+            verbose.set(true)
+            richOutput.set(true)
+
+            javaLauncher.set(javaToolchains.launcherFor {
+                languageVersion.set(JavaLanguageVersion.of(17))
+            })
         }
     }
 }

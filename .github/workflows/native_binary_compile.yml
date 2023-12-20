@@ -63,8 +63,9 @@ jobs:
           sudo apt-get install -y debhelper devscripts
           debuild -us -uc -b
 
-      - name: Print debug
+      - name: Copy Debian Package
         run: |
+          cp ../gpt-for-uds*.deb .
           pwd
           ls -la
           tree -L 4
@@ -73,4 +74,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: gpt-for-uds
-          path: gpt-for-uds_*.deb
+          path: gpt-for-uds*.deb

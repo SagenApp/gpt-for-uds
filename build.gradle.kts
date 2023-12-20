@@ -34,7 +34,7 @@ tasks.withType<Jar> {
 graalvmNative {
     binaries {
         named("main") {
-            imageName.set("gpt-for-uds-${versionFromProperties}")
+            imageName.set("gpt-for-uds")
             mainClass.set("app.sagen.chatgptclient.UnixSocketServer")
             buildArgs.add("-O4")
             buildArgs.add("--no-fallback")

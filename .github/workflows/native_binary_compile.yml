@@ -13,7 +13,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+      - name: Set up dependencies
+        run: sudo apt-get update && sudo apt-get install -y devscripts
+
+#      - name: Automatically update changelog
+#        run: |
+#          dch -v "1.0-$(date +%Y%m%d%H%M%S)" -D unstable "Automated build version."
+#          git config --local user.email "actions@github.com"
+#          git config --local user.name "GitHub Actions"
+#          git add debian/changelog
+#          git commit -m "Update changelog"
+#          git push
+
       - name: Set up GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
@@ -52,8 +63,14 @@ jobs:
           sudo apt-get install -y debhelper devscripts
           debuild -us -uc -b
 
+      - name: Print debug
+        run: |
+          pwd
+          ls -la
+          tree -L 4
+
       - name: Upload Debian Package
         uses: actions/upload-artifact@v3
         with:
           name: gpt-for-uds
-          path: ../gpt-for-uds_*.deb
+          path: gpt-for-uds_*.deb

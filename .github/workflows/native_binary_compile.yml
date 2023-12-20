@@ -65,13 +65,13 @@ jobs:
 
       - name: Copy Debian Package
         run: |
-          cp ../gpt-for-uds*.deb .
+          cp ../gpt-for-uds*.deb gpt-for-uds.deb
 
       - name: Upload Debian Package
         uses: actions/upload-artifact@v3
         with:
           name: gpt-for-uds
-          path: gpt-for-uds*.deb
+          path: gpt-for-uds.deb
 
       # New steps start here
       - name: Get the current timestamp
@@ -97,6 +97,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./gpt-for-uds*.deb
+          asset_path: ./gpt-for-uds.deb
           asset_name: gpt-for-uds-${{ steps.timestamp.outputs.timestamp }}.deb
           asset_content_type: application/vnd.debian.binary-package

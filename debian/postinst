@@ -1,0 +1,20 @@
+#!/bin/sh
+
+chown gptforuds:gptforuds /usr/bin/gpt-for-uds
+chown gptforuds:gptforuds /etc/gpt-for-uds/gpt-for-uds.conf
+# Should only be readable by root and our application
+chmod 600 /etc/gpt-for-uds/gpt-for-uds.conf
+
+# Create the directory in /run for out UDS file
+systemd-tmpfiles --create
+
+# Reload the systemd daemon in case the service file has changed
+systemctl daemon-reload
+
+# Enable your service to start on boot
+systemctl enable gpt-for-uds.service
+
+# Start your service
+systemctl start gpt-for-uds.service
+
+exit 0

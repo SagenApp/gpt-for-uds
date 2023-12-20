@@ -1,0 +1,12 @@
+Source: gpt-for-uds
+Section: misc
+Maintainer: Alexander Sagen <alexander@sagen.dev>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 4.5.0
+Homepage: https://github.com/SagenApp/gpt-for-uds
+
+Package: gpt-for-uds
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: GPT for UDS
+ GPT for UDS is a tool for creating ChatGPT sockets that other applications can interact with.

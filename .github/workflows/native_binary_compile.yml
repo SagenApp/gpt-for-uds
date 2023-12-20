@@ -1,0 +1,77 @@
+name: Compile native binary file
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up dependencies
+        run: sudo apt-get update && sudo apt-get install -y devscripts
+
+#      - name: Automatically update changelog
+#        run: |
+#          dch -v "1.0-$(date +%Y%m%d%H%M%S)" -D unstable "Automated build version."
+#          git config --local user.email "actions@github.com"
+#          git config --local user.name "GitHub Actions"
+#          git add debian/changelog
+#          git commit -m "Update changelog"
+#          git push
+
+      - name: Set up GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          version: 'latest' # or specify a version such as '22.2.0'
+          java-version: '17'  # Correct value for Java 17
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Install native-image component
+        run: gu install native-image
+
+      - name: Print debug information
+        run: |
+          echo "GRAALVM_HOME: $GRAALVM_HOME"
+          echo "JAVA_HOME: $JAVA_HOME"
+          java --version
+          gu list
+          native-image --version
+
+      - name: Compile native application
+        run: ./gradlew nativeCompile -Pversion=final
+        env:
+          GITHUB_REF: ${{ github.ref }}
+          JAVA_HOME: ${{ env.GRAALVM_HOME }}  # Override JAVA_HOME to use GraalVM
+
+      - name: Prepare Debian Package
+        run: |
+          chmod 755 debian/postinst
+          chmod 755 debian/prerm
+          chmod 755 debian/postrm
+          chmod 755 debian/preinst
+
+      - name: Build Debian Package
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y debhelper devscripts
+          debuild -us -uc -b
+
+      - name: Copy Debian Package
+        run: |
+          cp ../gpt-for-uds*.deb .
+          pwd
+          ls -la
+          tree -L 4
+
+      - name: Upload Debian Package
+        uses: actions/upload-artifact@v3
+        with:
+          name: gpt-for-uds
+          path: gpt-for-uds*.deb

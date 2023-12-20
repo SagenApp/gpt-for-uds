@@ -4,13 +4,13 @@ on:
   push:
     branches:
       - master
-    paths-ignore:
-      - 'debian/changelog'
+#    paths-ignore:
+#      - 'debian/changelog'
   pull_request:
     branches:
       - master
-    paths-ignore:
-      - 'debian/changelog'
+#    paths-ignore:
+#      - 'debian/changelog'
   
 jobs:
   build:
@@ -20,15 +20,15 @@ jobs:
       - name: Set up dependencies
         run: sudo apt-get update && sudo apt-get install -y devscripts
 
-      - name: Automatically update changelog
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        run: |
-          dch -v "1.0-$(date +%Y%m%d%H%M%S)" -D unstable "Automated build version."
-          git config --local user.email "actions@github.com"
-          git config --local user.name "GitHub Actions"
-          git add debian/changelog
-          git commit -m "Update changelog"
-          git push
+#      - name: Automatically update changelog
+#        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+#        run: |
+#          dch -v "1.0-$(date +%Y%m%d%H%M%S)" -D unstable "Automated build version."
+#          git config --local user.email "actions@github.com"
+#          git config --local user.name "GitHub Actions"
+#          git add debian/changelog
+#          git commit -m "Update changelog"
+#          git push
 
       - name: Set up GraalVM
         uses: graalvm/setup-graalvm@v1

@@ -1,3 +1,9 @@
+gpt-for-uds (1.0-20231220222602) unstable; urgency=medium
+
+  * Next version with various fixes and improvements
+
+ -- Alexander Sagen <alexander.sagen@visma.com>  Wed, 20 Dec 2023 22:26:02 +0100
+
 gpt-for-uds (1.0-1) unstable; urgency=low
 
   * Initial release

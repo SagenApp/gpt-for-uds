@@ -1,0 +1,9 @@
+#!/bin/sh
+set -e
+
+# Only remove the user if the package is being purged (not on upgrade)
+if [ "$1" = "purge" ]; then
+    deluser --system gptforuds
+fi
+
+exit 0

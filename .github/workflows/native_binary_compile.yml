@@ -63,8 +63,9 @@ jobs:
           sudo apt-get install -y debhelper devscripts
           debuild -us -uc -b
 
-      - name: Print debug
+      - name: Copy Debian Package
         run: |
+          cp ../gpt-for-uds_*.deb .
           pwd
           ls -la
           tree -L 4

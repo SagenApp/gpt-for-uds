@@ -65,7 +65,7 @@ jobs:
 
       - name: Copy Debian Package
         run: |
-          cp ../gpt-for-uds_*.deb .
+          cp ../gpt-for-uds*.deb .
           pwd
           ls -la
           tree -L 4
@@ -74,4 +74,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: gpt-for-uds
-          path: gpt-for-uds_*.deb
+          path: gpt-for-uds*.deb

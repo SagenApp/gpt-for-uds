@@ -66,12 +66,37 @@ jobs:
       - name: Copy Debian Package
         run: |
           cp ../gpt-for-uds*.deb .
-          pwd
-          ls -la
-          tree -L 4
 
       - name: Upload Debian Package
         uses: actions/upload-artifact@v3
         with:
           name: gpt-for-uds
           path: gpt-for-uds*.deb
+
+      # New steps start here
+      - name: Get the current timestamp
+        id: timestamp
+        run: echo "::set-output name=timestamp::$(date +'%Y%m%d%H%M%S')"
+
+      - name: Create Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.timestamp.outputs.timestamp }}
+          release_name: Release-${{ steps.timestamp.outputs.timestamp }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Debian Package to Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: gpt-for-uds*.deb
+          asset_name: gpt-for-uds-${{ steps.timestamp.outputs.timestamp }}.deb
+          asset_content_type: application/octet-stream

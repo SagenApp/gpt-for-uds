@@ -1,4 +1,4 @@
 build/native/nativeCompile/gpt-for-uds usr/bin/
 systemd/gpt-for-uds.conf /etc/gpt-for-uds/
 systemd/gpt-for-uds.service /lib/systemd/system/
-systemd/gpt-for-uds-run.conf /etc/tmpfiles.d/gpt-for-uds-run.conf
+systemd/gpt-for-uds-run.conf /etc/tmpfiles.d/

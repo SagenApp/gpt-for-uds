@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-User=your-app-user
+User=gptforuds
 EnvironmentFile=/etc/gpt-for-uds/gpt-for-uds.conf
 ExecStart=/usr/bin/gpt-for-uds -f ${SOCKET_FILE} -t ${GPT_TOKEN}
 Restart=on-failure

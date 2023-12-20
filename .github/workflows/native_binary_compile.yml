@@ -34,28 +34,26 @@ jobs:
           native-image --version
 
       - name: Compile native application
-        run: ./gradlew nativeCompile -Pversion=${GITHUB_REF#refs/tags/}
+        run: ./gradlew nativeCompile -Pversion=final
         env:
           GITHUB_REF: ${{ github.ref }}
           JAVA_HOME: ${{ env.GRAALVM_HOME }}  # Override JAVA_HOME to use GraalVM
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
-          draft: false
-          prerelease: false
+      - name: Prepare Debian Package
+        run: |
+          chmod 755 debian/postinst
+          chmod 755 debian/prerm
+          chmod 755 debian/postrm
+          chmod 755 debian/preinst
 
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build Debian Package
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y debhelper devscripts
+          debuild -us -uc -b
+
+      - name: Upload Debian Package
+        uses: actions/upload-artifact@v3
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/native/nativeCompile/gpt-for-uds-${{ github.event.release.tag_name }} # replace with the correct path and filename pattern
-          asset_name: gpt-for-uds-${{ github.event.release.tag_name }} # replace with the correct filename pattern
-          asset_content_type: application/octet-stream
+          name: gpt-for-uds
+          path: ../gpt-for-uds_*.deb
